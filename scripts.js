@@ -167,6 +167,12 @@ function equationParser(eq) {
             } else {}
         }
 
+        // if '-' and no num before that, and '-' not in num_holder
+        else if ((i.textContent == '-') && (num_holder.length == 0)) {
+            num_holder += i;
+            console.log(i);
+        } // DOESN'T WORK
+
         // if op, push held num, push op
         else {
 
@@ -189,9 +195,6 @@ would be to figure out the smallest amount of...
 99999*99999*99999 = 999,700,029,999 (15-12 digits...)
 */
 
-//let clearFunction = () => updateScreen('');
-//assignEvent('#btn-clear', clearFunction);
-
 // define '=' button
 function eqFunction() {
 
@@ -212,6 +215,9 @@ document.querySelectorAll('.op-btn').forEach(item => {
     function opFunction() {
         if (isOperator(returnScreen()[returnScreen().length])) {}
 
+        // check if result-screen blank to avoid starting with operator
+        else if (returnScreen() == '') {}
+
         // else, add op to result-screen
         else {
             addScreen(item.textContent);
@@ -226,9 +232,12 @@ document.querySelectorAll('.op-btn').forEach(item => {
 /*
 
 Issues remaining: 
-  - shouldn't be able to start with an operator
   - except for '-': need to support negative numbers as well
   - the whole '.' topic....
   - some way of limiting amount of nums in a row to 99999x3 prevent result-screen spill-over
   - also result-screen should clear after answer presented if new num clicked
-*/
+     - perhaps by just seperately adding an eventlistener to all buttons
+       before the other buttons
+  - no dividing by 0
+  - prevent multiple operators in a row!!! 
+*/ 
