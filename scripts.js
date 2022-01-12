@@ -95,6 +95,9 @@ function repScreen(text) {
     addScreen(text);
 }
 
+// function to get last character in result-screen
+let lastScreen = () => returnScreen()[returnScreen().length-1];
+
 /*
 This next part solves an equation string.
 */
@@ -210,10 +213,10 @@ assignEvent('#btn-equals', eqFunction);
 
 // define op buttons
 document.querySelectorAll('.op-btn').forEach(item => {
-
-    // check if last char is already an op OR no number
     function opFunction() {
-        if (isOperator(returnScreen()[returnScreen().length])) {}
+
+        // check if last char is already an operator
+        if (isOperator(lastScreen())) {}
 
         // check if result-screen blank to avoid starting with operator
         else if (returnScreen() == '') {}
@@ -239,5 +242,4 @@ Issues remaining:
      - perhaps by just seperately adding an eventlistener to all buttons
        before the other buttons
   - no dividing by 0
-  - prevent multiple operators in a row!!! 
 */ 
