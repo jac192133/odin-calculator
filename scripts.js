@@ -153,11 +153,14 @@ function equationParser(eq) {
                 } else {
                     result = operate(result, this.ops[o], this.nums[n]);
                     o += 1;
-                    console.log(result);
                 }
             }
-            // return result
-            return result;
+            // see if result is too big
+            if (result.toString().length > 5) {
+                return("too big for the screen!");
+            } else {
+                return result;
+            }
         }
     }
 
@@ -245,8 +248,5 @@ Issues remaining:
   - except for '-': need to support negative numbers as well
   - could also tweak the ÷ result to show amount of characters = total answer like 15 chars instead of 2 decimal places
   - the whole '.' topic...
-  - some way of limiting amount of nums in a row to 99999x3 prevent result-screen spill-over
-  - also result-screen should clear after answer presented if new num clicked
-     - perhaps by just seperately adding an eventlistener to all buttons
-       before the other buttons
+  - prevent spill-over from just entered equation
 */ 
