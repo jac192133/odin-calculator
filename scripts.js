@@ -145,9 +145,16 @@ function equationParser(eq) {
             // op[0] -> num[1] x result, op[1] -> 
             let o = 0;
             for (let n = 1; n < this.nums.length; n++) {
-                result = operate(result, this.ops[o], this.nums[n]);
-                o += 1;
-                console.log(result);
+
+                // prevent dividing by 0
+                if ((result == 0) && (this.ops[o] == '÷') && (this.nums[n] == 0)) {
+                    return "Stop it! No 0÷0!";
+                    n = this.nums.length;
+                } else {
+                    result = operate(result, this.ops[o], this.nums[n]);
+                    o += 1;
+                    console.log(result);
+                }
             }
             // return result
             return result;
@@ -202,7 +209,7 @@ would be to figure out the smallest amount of...
 function eqFunction() {
 
     // check if last character is an op; if so, delete it
-    if (isOperator(returnScreen()[returnScreen().length-1])) {
+    if (isOperator(lastScreen())) {
         delFunction();
     } else {} // else: continue
 
@@ -236,10 +243,10 @@ document.querySelectorAll('.op-btn').forEach(item => {
 
 Issues remaining: 
   - except for '-': need to support negative numbers as well
-  - the whole '.' topic....
+  - could also tweak the ÷ result to show amount of characters = total answer like 15 chars instead of 2 decimal places
+  - the whole '.' topic...
   - some way of limiting amount of nums in a row to 99999x3 prevent result-screen spill-over
   - also result-screen should clear after answer presented if new num clicked
      - perhaps by just seperately adding an eventlistener to all buttons
        before the other buttons
-  - no dividing by 0
 */ 
