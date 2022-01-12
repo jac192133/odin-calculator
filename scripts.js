@@ -102,8 +102,16 @@ function repScreen(text) {
     addScreen(text);
 }
 
-// function to get last character in result-screen
+// function to get last character in result-screen, and second to last, and both are '-'
 let lastScreen = () => returnScreen()[returnScreen().length-1];
+let secondLastScreen = () => returnScreen()[returnScreen().length-2];
+function bothMinus() {
+    if ((lastScreen() == '-') && (secondLastScreen() == '-'))  {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 /*
 This next part solves an equation string.
@@ -187,11 +195,11 @@ function equationParser(eq) {
             } else {}
         }
 
-        // if '-' and no num before that, and '-' not in num_holder
-        else if ((i.textContent == '-') && (num_holder.length == 0)) {
-            num_holder += i;
-            console.log(i);
-        } // DOESN'T WORK
+        // add '-' to num_holder IF only one, and only at beginning: meaning, num_holder = '';
+        // also refer back to prevention of starting with an operator
+        else if ((eq[i] == '-') && (num_holder == '')) {
+            num_holder += '-';
+        }
 
         // if op, push held num, push op
         else {
@@ -228,11 +236,11 @@ document.querySelectorAll('.op-btn').forEach(item => {
         // prevent result-screen spill-over from entry
         if (returnScreen().toString().length > 17) {}
 
-        // check if last char is already an operator
-        else if (isOperator(lastScreen())) {}
+        // prevent more than two '-' in a row
+        else if (bothMinus()) {}
 
-        // check if result-screen blank to avoid starting with operator
-        else if (returnScreen() == '') {}
+        // check if result-screen blank to avoid starting with operator unless '-'
+        else if ((returnScreen() == '') && (item.textContent != '-')) {}
 
         // else, add op to result-screen
         else {
@@ -246,7 +254,7 @@ document.querySelectorAll('.op-btn').forEach(item => {
 
 /*
 
-Possible minor tweaks: 
+Possible future minor tweaks: 
   - could tweak the ÷ result to show amount of characters = total answer like 15 chars instead of 2 decimal places
   - result-screen could light up with red border if at max character amount
 
