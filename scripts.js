@@ -25,15 +25,24 @@ for (let i = 9; i > 0; i--) {
 }
 
 // create '=' button separately because of css issues
-let equals_button = document.createElement('button');
+const equals_button = document.createElement('button');
 equals_button.classList.add('spec-btn');
 equals_button.classList.add('btn');
 equals_button.textContent = '=';
 equals_button.setAttribute('id', 'btn-equals');
 main_buttons.appendChild(equals_button);
 
-// add '0' and '.'
-createButton('.', main_buttons, 'spec-btn');
+
+// add period button separately because of css issues
+const period_button = document.createElement('button');
+period_button.classList.add('spec-btn');
+period_button.classList.add('btn');
+period_button.textContent = '.';
+period_button.setAttribute('id', 'btn-period');
+main_buttons.appendChild(period_button);
+
+
+// add '0' button to where it should be
 createButton('0', main_buttons, 'num-btn');
 
 // create operation buttons separately because of CSS issues
@@ -105,8 +114,8 @@ function repScreen(text) {
 // function to get last character in result-screen, and second to last, and both are '-'
 let lastScreen = () => returnScreen()[returnScreen().length-1];
 let secondLastScreen = () => returnScreen()[returnScreen().length-2];
-function bothMinus() {
-    if ((lastScreen() == '-') && (secondLastScreen() == '-'))  {
+function bothSame(char) {
+    if ((lastScreen() == char) && (secondLastScreen() == char))  {
         return true;
     } else {
         return false;
@@ -201,6 +210,11 @@ function equationParser(eq) {
             num_holder += '-';
         }
 
+        // add one and only one '.' 
+        else if ((eq[i] == '.') && (!(num_holder.includes('.')))) {
+            num_holder += '.';
+        }
+
         // if op, push held num, push op
         else {
 
@@ -237,7 +251,7 @@ document.querySelectorAll('.op-btn').forEach(item => {
         if (returnScreen().toString().length > 17) {}
 
         // prevent more than two '-' in a row
-        else if (bothMinus()) {}
+        else if (bothSame('-')) {}
 
         // check if result-screen blank to avoid starting with operator unless '-'
         else if ((returnScreen() == '') && (item.textContent != '-')) {}
@@ -252,16 +266,53 @@ document.querySelectorAll('.op-btn').forEach(item => {
     assignEvent('#' + item.id, opFunction);
 });
 
+// define period button
+function peFunction() {
+
+    // sub-function to determine if there's a period already between an operator or [0]
+    function peBefore() {
+
+        // iterate through string BACKWARDS until op or [0]
+        for (let i = returnScreen().toString().length -1; i >= 0; i--) {
+
+            // if not op or not [0], continue
+            if ((!(isOperator(returnScreen().toString()[i]))) && (i != 0)) {}
+
+            // once found, examine from there to last element for preexisting '.'
+            else {
+                if (returnScreen().toString().slice(i).includes('.')) {
+
+                    // returns true if period found, otherwise returns false
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    // prevent result-screen spill-over from entry
+    if (returnScreen().toString().length > 17) {}
+
+    // prevent more than one '.' between each operator
+    else if (peBefore()) {}
+    
+    // prevent more than two '.' in a row
+    else if (returnScreen() == '.') {}
+
+    // else, add '.' to result-screen
+    else {
+        addScreen(period_button.textContent);
+    }
+}
+assignEvent('#' + period_button.id, peFunction);
+
+
 /*
 
 Possible future minor tweaks: 
   - could tweak the ÷ result to show amount of characters = total answer like 15 chars instead of 2 decimal places
   - result-screen could light up with red border if at max character amount
-
-Support for negative number and decimal entries
-  - I'm realizing now that the '-' and '.' fixes are two sides of the same coin
-  - both need to be added to the num_holder only once
-  - but '.' can be added in beginning, middle, or even end, I guess
-  - wheras '-' can only be in the beginning
+  - could relax the spill-over precautions to allow decimal stuff, and or approximations of large numbers
 
 */ 
