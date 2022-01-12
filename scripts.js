@@ -85,7 +85,14 @@ assignEvent('#btn-del', delFunction);
 // define num buttons function (add textContent to screen)
 document.querySelectorAll('.num-btn').forEach(item => {
 
-    let addChar = () => addScreen(item.textContent);
+    // prevent result-screen spill-over from entry
+    function addChar() {
+        if (returnScreen().toString().length > 17) {}
+        else {
+            addScreen(item.textContent);
+        }
+    }
+    // assign function to button
     assignEvent('#' + item.id, addChar);
 });
 
@@ -201,13 +208,6 @@ function equationParser(eq) {
     return equation.solve();
 }
 
-/*
-operation and special buttons
-also, an easy way to limit multiplecation spill,
-would be to figure out the smallest amount of...
-99999*99999*99999 = 999,700,029,999 (15-12 digits...)
-*/
-
 // define '=' button
 function eqFunction() {
 
@@ -225,8 +225,11 @@ assignEvent('#btn-equals', eqFunction);
 document.querySelectorAll('.op-btn').forEach(item => {
     function opFunction() {
 
+        // prevent result-screen spill-over from entry
+        if (returnScreen().toString().length > 17) {}
+
         // check if last char is already an operator
-        if (isOperator(lastScreen())) {}
+        else if (isOperator(lastScreen())) {}
 
         // check if result-screen blank to avoid starting with operator
         else if (returnScreen() == '') {}
@@ -238,15 +241,19 @@ document.querySelectorAll('.op-btn').forEach(item => {
     }
 
     // assign function to button
-    console.log('#' + item.id);
     assignEvent('#' + item.id, opFunction);
 });
 
 /*
 
-Issues remaining: 
-  - except for '-': need to support negative numbers as well
-  - could also tweak the ÷ result to show amount of characters = total answer like 15 chars instead of 2 decimal places
-  - the whole '.' topic...
-  - prevent spill-over from just entered equation
+Possible minor tweaks: 
+  - could tweak the ÷ result to show amount of characters = total answer like 15 chars instead of 2 decimal places
+  - result-screen could light up with red border if at max character amount
+
+Support for negative number and decimal entries
+  - I'm realizing now that the '-' and '.' fixes are two sides of the same coin
+  - both need to be added to the num_holder only once
+  - but '.' can be added in beginning, middle, or even end, I guess
+  - wheras '-' can only be in the beginning
+
 */ 
