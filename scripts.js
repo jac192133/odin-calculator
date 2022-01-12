@@ -78,7 +78,100 @@ function repScreen(text) {
 }
 
 /*
-Next steps: 
-  - get operation buttons to write char IF there are no other operations and the last char isn't a '.'
-  - get the '=' button to parse result-screen string and come up with an answer for the equation
+This next part solves an equation string.
 */
+
+// function returns true if char is operator, false if not
+function isOperator(char) {
+    const operators = ['+', '-', 'x', '÷'];
+    if (operators.includes(char)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// function to parse equation
+function equationParser(eq) {
+
+    // function to operate via operator char
+    function operate(num1, op_char, num2) {
+
+        // make sure numbers
+        num1 = parseFloat(num1);
+        num2 = parseFloat(num2);
+
+        if (op_char == '+') {
+            return num1 + num2;
+        } else if (op_char == '-') {
+            return num1 - num2;
+        } else if (op_char == 'x') {
+            return num1 * num2;
+        } else {
+            return (num1 / num2.toFixed(2));
+        }
+    }
+
+    // set up equation holder object
+    let equation = {
+        nums: [],
+        ops: [],
+
+        // object method to solve equation
+        solve: function() {
+            let result = this.nums[0];
+
+            // op[0] -> num[1] x result, op[1] -> 
+            let o = 0;
+            for (let n = 1; n < this.nums.length; n++) {
+                result = operate(result, this.ops[o], this.nums[n]);
+                o += 1;
+                console.log(result);
+            }
+            // return result
+            return result;
+        }
+    }
+
+    // hold num until op, then push nums
+    let num_holder = '';
+    for (let i = 0; i < eq.length; i++) {
+
+        // check if num, if so, hold
+        if (!(isOperator(eq[i]))) {
+
+            // hold num
+            num_holder += eq[i];
+
+            // push if last number
+            if (eq.substring(i).length == 1) {
+                equation.nums.push(num_holder);
+            } else {}
+        }
+
+        // if op, push held num, push op
+        else {
+
+            // push held num, reset holder
+            equation.nums.push(num_holder);
+            num_holder = '';
+
+            // push op
+            equation.ops.push(eq[i]);
+        }
+    }
+    // return equation object
+    return equation.solve();
+}
+
+/*
+Now, finally time to give the '=' button a function
+First, we need to add the operations to the result-screen
+also, an easy way to limit multiplecation spill,
+would be to figure out the smallest amount of...
+99999*99999*99999 = 999,700,029,999 (15-12 digits...)
+*/
+
+// define '=' button NOTE: NEED TO MAKE SURE NOT ENDING WITH OP, ETC
+let eqFunction = () => equationParser(returnScreen);
+assignEvent('#btn-=', eqFunction);
