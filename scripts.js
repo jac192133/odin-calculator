@@ -165,13 +165,52 @@ function equationParser(eq) {
 }
 
 /*
-Now, finally time to give the '=' button a function
-First, we need to add the operations to the result-screen
+operation and special buttons
 also, an easy way to limit multiplecation spill,
 would be to figure out the smallest amount of...
 99999*99999*99999 = 999,700,029,999 (15-12 digits...)
 */
 
+// define op buttons
+document.querySelectorAll('.op-btn').forEach(item => {
+
+    console.log(item.id);
+
+    // check if last char is already an op OR no number
+    function opFunction() {
+        if (isOperator(returnScreen()[returnScreen().length])) {}
+
+        // else, add op to result-screen
+        else {
+            addScreen(item.textContent);
+        }
+    }
+
+    // assign function to button
+    console.log('#' + item.id);
+    assignEvent('#' + item.id, opFunction);
+});
+
 // define '=' button NOTE: NEED TO MAKE SURE NOT ENDING WITH OP, ETC
-let eqFunction = () => equationParser(returnScreen);
-assignEvent('#btn-=', eqFunction);
+function eqFunction() {
+
+    // check if last character is an op; if so, delete it
+    if (isOperator(returnScreen()[returnScreen().length-1])) {
+        delFunction();
+    } else {} // else: continue
+
+    // run eqationParser and set result screen equal to it
+    updateScreen(equationParser(returnScreen()));
+}
+assignEvent("['#btn-=']", eqFunction);
+
+/*
+
+Issues remaining: 
+  - + button not working, some ID issue or some issue with item.xxx in loop
+  - shouldn't be able to start with an operator
+  - except for '-': need to support negative numbers as well
+  - the whole '.' topic....
+  - some way of limiting amount of nums in a row to 99999x3 prevent result-screen spill-over
+
+*/
