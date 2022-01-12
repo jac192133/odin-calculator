@@ -24,16 +24,33 @@ for (let i = 9; i > 0; i--) {
     createButton(i, main_buttons, 'num-btn');
 }
 
-// add '0' '.' and '=' buttons
-createButton('=', main_buttons, 'spec-btn');
+// create '=' button separately because of css issues
+let equals_button = document.createElement('button');
+equals_button.classList.add('spec-btn');
+equals_button.classList.add('btn');
+equals_button.textContent = '=';
+equals_button.setAttribute('id', 'btn-equals');
+main_buttons.appendChild(equals_button);
+
+// add '0' and '.'
 createButton('.', main_buttons, 'spec-btn');
 createButton('0', main_buttons, 'num-btn');
 
-// create operation buttons and tag '=' button
-const operations = ['÷', 'x', '-', '+'];
-for (op in operations) {
-    createButton(operations[op], side_buttons, 'op-btn');
+// create operation buttons separately because of CSS issues
+function createOpButton(sign, id) {
+    let new_op_button = document.createElement('button');
+    new_op_button.classList.add('op-btn');
+    new_op_button.classList.add('btn');
+    new_op_button.textContent = sign;
+    new_op_button.setAttribute('id', 'btn-' + id);
+    side_buttons.appendChild(new_op_button);
 }
+
+// ÷ divide, x multiply, - subtract, + add
+createOpButton('÷', 'divide');
+createOpButton('x', 'multiply');
+createOpButton('-', 'subtract');
+createOpButton('+', 'add');
 
 // create delete, clear buttons
 createButton('del', bottom_buttons, 'spec-btn');
@@ -67,6 +84,7 @@ assignEvent('#btn-del', delFunction);
 
 // define num buttons function (add textContent to screen)
 document.querySelectorAll('.num-btn').forEach(item => {
+
     let addChar = () => addScreen(item.textContent);
     assignEvent('#' + item.id, addChar);
 });
@@ -171,10 +189,24 @@ would be to figure out the smallest amount of...
 99999*99999*99999 = 999,700,029,999 (15-12 digits...)
 */
 
+//let clearFunction = () => updateScreen('');
+//assignEvent('#btn-clear', clearFunction);
+
+// define '=' button
+function eqFunction() {
+
+    // check if last character is an op; if so, delete it
+    if (isOperator(returnScreen()[returnScreen().length-1])) {
+        delFunction();
+    } else {} // else: continue
+
+    // run eqationParser and set result screen equal to it
+    updateScreen(equationParser(returnScreen()));
+}
+assignEvent('#btn-equals', eqFunction);
+
 // define op buttons
 document.querySelectorAll('.op-btn').forEach(item => {
-
-    console.log(item.id);
 
     // check if last char is already an op OR no number
     function opFunction() {
@@ -191,26 +223,12 @@ document.querySelectorAll('.op-btn').forEach(item => {
     assignEvent('#' + item.id, opFunction);
 });
 
-// define '=' button NOTE: NEED TO MAKE SURE NOT ENDING WITH OP, ETC
-function eqFunction() {
-
-    // check if last character is an op; if so, delete it
-    if (isOperator(returnScreen()[returnScreen().length-1])) {
-        delFunction();
-    } else {} // else: continue
-
-    // run eqationParser and set result screen equal to it
-    updateScreen(equationParser(returnScreen()));
-}
-assignEvent("['#btn-=']", eqFunction);
-
 /*
 
 Issues remaining: 
-  - + button not working, some ID issue or some issue with item.xxx in loop
   - shouldn't be able to start with an operator
   - except for '-': need to support negative numbers as well
   - the whole '.' topic....
   - some way of limiting amount of nums in a row to 99999x3 prevent result-screen spill-over
-
+  - also result-screen should clear after answer presented if new num clicked
 */
